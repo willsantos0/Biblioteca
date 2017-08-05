@@ -1,0 +1,105 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Pesquisa de Empréstimos</ui:define>
+
+	<ui:define name="corpo">
+		<h1>Pesquisa de Empréstimos</h1>
+
+		<h:form id="frmPesquisa">
+			<p:messages id="messages" autoUpdate="true" closable="true" />
+			<p:toolbar style="margin-top: 20px">
+				<p:toolbarGroup>
+					<p:commandButton value="Novo Empréstimo" id="botaoNovo"
+						action="/emprestimo/CadastroEmprestimo.xhtml" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:dataTable id="emprestimoTable"
+				value="#{emprestimoBean.emprestimos}" var="emprestimo"
+				style="margin-top: 20px"
+				emptyMessage="Nenhum empréstimo encontrado." rows="20"
+				paginator="true" paginatorAlwaysVisible="false"
+				paginatorPosition="bottom">
+
+				<p:column style="width: 100px; text-align: center">
+
+					<p:commandButton title="Renovar"
+						oncomplete="PF('confirmacaoRenovacao').show()" process="@this"
+						update=":frmPesquisa:confirmacaoRenovacaoDialog" style="color:green">
+						<f:setPropertyActionListener
+							target="#{emprestimoBean.emprestimoselecionado}"
+							value="#{emprestimo}" />
+					</p:commandButton>
+
+					<p:commandButton title="Devolver"
+						oncomplete="PF('confirmacaoDevolucao').show()" process="@this"
+						update=":frmPesquisa:confirmacaoDevolucaoDialog" style="color:blue">
+						<f:setPropertyActionListener
+							target="#{emprestimoBean.emprestimoselecionado}"
+							value="#{emprestimo}" />
+					</p:commandButton>
+				</p:column>
+
+				<p:column headerText="Número do empréstimo"
+					style="text-align: center; width: 100px">
+					<h:outputText value="#{emprestimo.numero_emprestimo}" />
+				</p:column>
+				<p:column headerText="Livro">
+					<h:outputText value="#{emprestimo.livro_emprestado.titulo}" />
+				</p:column>
+				<p:column headerText="Data do empréstimo">
+					<p:outputLabel value="#{emprestimo.data_emprestimo}">
+						<f:convertDateTime pattern="dd/MM/yyyy" timeZone="GMT-03:00"/>
+					</p:outputLabel>
+				</p:column>
+
+				<p:column headerText="Data de devolução">
+					<p:outputLabel value="#{emprestimo.data_devoluçao}">
+						<f:convertDateTime pattern="dd/MM/yyyy" timeZone="GMT-03:00"/>
+					</p:outputLabel>
+				</p:column>
+
+				<p:column headerText="Quantidade de renovações">
+					<h:outputText value="#{emprestimo.qtdRenovacoes}" />
+				</p:column>
+
+			</p:dataTable>
+			<p:confirmDialog id="confirmacaoDevolucaoDialog"
+				widgetVar="confirmacaoDevolucao"
+				message="Tem certeza que deseja devolver #{emprestimoBean.emprestimoselecionado.livro_emprestado.titulo}?"
+				header="Devolução de Empréstimo" severity="alert">
+				<p:button value="Não"
+					onclick="PF('confirmacaoDevolucao').hide(); return false;" />
+				<p:commandButton value="Sim" ajax="true"
+					update=":frmPesquisa:emprestimoTable" process="@all"
+					onclick="PF('confirmacaoDevolucao').hide()"
+					action="#{emprestimoBean.devolver()}">
+					<p:ajax update="frmPesquisa" />
+				</p:commandButton>
+
+
+			</p:confirmDialog>
+
+			<p:confirmDialog id="confirmacaoRenovacaoDialog"
+				widgetVar="confirmacaoRenovacao"
+				message="Tem certeza que deseja Renovar #{emprestimoBean.emprestimoselecionado.livro_emprestado.titulo}?"
+				header="Renovação de Empréstimo" severity="alert">
+				<p:button value="Não"
+					onclick="PF('confirmacaoRenovacao').hide(); return false;" />
+				<p:commandButton value="Sim" ajax="true"
+					update=":frmPesquisa:emprestimoTable" process="@all"
+					onclick="PF('confirmacaoRenovacao').hide()"
+					action="#{emprestimoBean.renovar()}">
+					<p:ajax update="frmPesquisa" />
+				</p:commandButton>
+
+
+			</p:confirmDialog>
+		</h:form>
+	</ui:define>
+</ui:composition>

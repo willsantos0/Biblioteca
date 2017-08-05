@@ -1,0 +1,84 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Pesquisa de Livros</ui:define>
+
+	<ui:define name="corpo">
+		<h1>Pesquisa de Livros</h1>
+
+		<h:form id="frmPesquisa">
+			<p:messages id="messages" autoUpdate="true" closable="true" />
+
+			<p:toolbar style="margin-top: 20px">
+				<p:toolbarGroup>
+					<p:commandButton value="Novo" id="botaoNovo"
+						action="/livro/CadastroLivro.xhtml"
+						disabled="#{!seguranca.mostrarPaginas}" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:dataTable id="livrosTable" value="#{livroBean.livros}"
+				var="livro" style="margin-top: 20px"
+				emptyMessage="Nenhum Livro encontrado." rows="10" paginator="true"
+				paginatorAlwaysVisible="false" paginatorPosition="bottom"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="10,15,20,50" >
+				
+				<f:facet name="header">
+					Livros
+				</f:facet>
+				
+				<p:column headerText="Número de chamada"
+					style="text-align: center; width: 100px" sortBy="#{livro.numero_chamada}" filterBy="#{livro.numero_chamada}">
+					<h:outputText value="#{livro.numero_chamada}" />
+				</p:column>
+				<p:column headerText="Nome" sortBy="#{livro.titulo}" filterBy="#{livro.titulo}">
+					<h:outputText value="#{livro.titulo}"/>
+				</p:column>
+				<p:column headerText="Ano" sortBy="#{livro.ano}" filterBy="#{livro.ano}">
+					<h:outputText value="#{livro.ano}" />
+				</p:column>
+				<p:column headerText="Autor" sortBy="#{livro.autor}" filterBy="#{livro.autor}">
+					<h:outputText value="#{livro.autor}" />
+				</p:column>
+				<p:column headerText="Editora" sortBy="#{livro.editora}" filterBy="#{livro.editora}">
+					<h:outputText value="#{livro.editora}" />
+				</p:column>
+				<p:column headerText="Genero" sortBy="#{livro.genero}" filterBy="#{livro.genero}">
+					<h:outputText value="#{livro.genero}" />
+				</p:column>
+				<p:column headerText="Quantidade de Livros">
+					<h:outputText value="#{livro.qtd}" />
+				</p:column>
+				<p:column style="width: 100px; text-align: center">
+					<p:button outcome="/livro/CadastroLivro" icon="ui-icon-pencil"
+						title="Editar" disabled="#{!seguranca.mostrarPaginas}">
+						<f:param name="livro" value="#{livro.numero_chamada}" />
+					</p:button>
+					<p:commandButton icon="ui-icon-trash" title="Excluir"
+						oncomplete="PF('confirmacaoExclusao').show()" process="@this"
+						update=":frmPesquisa:confirmacaoExclusaoDialog"
+						disabled="#{!seguranca.mostrarPaginas}">
+						<f:setPropertyActionListener
+							target="#{livroBean.livroSelecionado}" value="#{livro}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+
+			<p:confirmDialog id="confirmacaoExclusaoDialog"
+				widgetVar="confirmacaoExclusao"
+				message="Tem certeza que deseja excluir o livro #{livroBean.livroSelecionado.titulo}?"
+				header="Exclusão de livro" severity="alert">
+				<p:button value="Não"
+					onclick="PF('confirmacaoExclusao').hide(); return false;" />
+				<p:commandButton value="Sim" update=":frmPesquisa:livrosTable"
+					onclick="PF('confirmacaoExclusao').hide()"
+					action="#{livroBean.excluir()}" />
+			</p:confirmDialog>
+		</h:form>
+	</ui:define>
+</ui:composition>

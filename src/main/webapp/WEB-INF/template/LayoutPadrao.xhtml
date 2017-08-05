@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:sec="http://www.springframework.org/security/tags">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title><ui:insert name="titulo">Sistema de Biblioteca</ui:insert></title>
+	<h:outputStylesheet library="css" name="sistema.css" />
+</h:head>
+
+<h:body>
+	<p:ajaxStatus styleClass="ajax-status">
+		<f:facet name="start">
+			<h:graphicImage library="imagens" name="carregando.gif" />
+		</f:facet>
+		<f:facet name="complete">
+			<h:outputText value="" />
+		</f:facet>
+	</p:ajaxStatus>
+
+	<header>
+	<div style="float: left;">
+		<h:link outcome="/Home">
+			<h:graphicImage library="imagens" name="logoBiblioteca.png"
+				style="height: 50px" />
+		</h:link>
+	</div>
+
+	<div style="float: right; margin-right: 110px">
+		<span
+			style="float: left; height: 30px; line-height: 30px; margin-right: 60px; font-size: 20px">
+			Olá #{seguranca.nomeUsuario} </span>
+		<h:form style="display: inline-block">
+			<p:menubar styleClass="menu-sistema" style="font-size: 20px">
+
+				<p:menuitem value="Meu Perfil" outcome="/usuario/MeuPerfil.xhtml" />
+
+				<p:submenu label="Pesquisa">
+					<p:menuitem value="Livro" outcome="/livro/PesquisaLivros.xhtml" />
+					<p:menuitem value="Empréstimo"
+						outcome="/emprestimo/PesquisaEmprestimo.xhtml" />
+				</p:submenu>
+				<p:submenu label="Cadastros" rendered="#{seguranca.mostrarPaginas}">
+
+					<p:menuitem value="Grupo" outcome="/grupo/PesquisaGrupos.xhtml" />
+					<p:menuitem value="Usuário"
+						outcome="/usuario/PesquisaUsuarios.xhtml" />
+
+				</p:submenu>
+				<p:menuitem value="Sair" url="/j_spring_security_logout" />
+			</p:menubar>
+		</h:form>
+	</div>
+	<div style="clear: both"></div>
+	</header>
+
+	<div id="conteudo">
+		<ui:insert name="corpo" />
+	</div>
+
+	<p:separator style="margin-top:10px"/>
+	
+</h:body>
+
+</html>

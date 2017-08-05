@@ -1,0 +1,75 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui">
+
+	<ui:define name="titulo">Novo Empréstimo</ui:define>
+
+	<ui:define name="corpo">
+		<f:metadata>
+			<o:viewParam name="emprestimo" value="#{emprestimoBean.emprestimo}" />
+		</f:metadata>
+
+		<h1>Novo Empréstimo</h1>
+
+		<h:form id="frmCadastro">
+			<p:messages id="messages" autoUpdate="true" closable="true" />
+
+			<p:toolbar style="margin-top: 20px">
+				<p:toolbarGroup>
+					<p:commandButton value="Realizar Empréstimo" id="botaoSalvar"
+						action="#{emprestimoBean.salvar()}" update="frmCadastro" />
+
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:button value="Meus empréstimos"
+						outcome="/emprestimo/PesquisaEmprestimo.xhtml" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:dataTable id="radioDT" var="livro"
+				value="#{emprestimoBean.livros}"
+				selection="#{emprestimoBean.emprestimo.livro_emprestado}"
+				rowKey="#{livro}" style="margin-top:20px" paginator="true" rows="10"
+				rowsPerPageTemplate="5,10,15"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				emptyMessage="Nenhum Livro Encontrado" paginatorPosition="bottom">
+				<f:facet name="header">
+					Livros
+				</f:facet>
+				<p:column selectionMode="single"
+					style="width:16px;text-align:center" />
+				<p:column headerText="Titulo" sortBy="#{livro.titulo}"
+					filterBy="#{livro.titulo}">
+					<h:outputText value="#{livro.titulo}" />
+				</p:column>
+				<p:column headerText="Editora" sortBy="#{livro.editora}"
+					filterBy="#{livro.editora}">
+					<h:outputText value="#{livro.editora}" />
+				</p:column>
+				<p:column headerText="Ano" sortBy="#{livro.ano}"
+					filterBy="#{livro.ano}">
+					<h:outputText value="#{livro.ano}" />
+				</p:column>
+				<p:column headerText="Gênero" sortBy="#{livro.genero}"
+					filterBy="#{livro.genero}">
+					<h:outputText value="#{livro.genero}" />
+				</p:column>
+				<p:column headerText="Autor" sortBy="#{livro.autor}"
+					filterBy="#{livro.autor}">
+					<h:outputText value="#{livro.autor}" />
+				</p:column>
+				<p:column headerText="Edição">
+					<h:outputText value="#{livro.ediçao}" />
+				</p:column>
+				<p:column headerText="Quantidade de Livros">
+					<h:outputText value="#{livro.qtd}" />
+				</p:column>
+
+			</p:dataTable>
+
+		</h:form>
+	</ui:define>
+</ui:composition>
